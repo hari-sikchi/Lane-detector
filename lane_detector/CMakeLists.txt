@@ -193,6 +193,8 @@ add_executable(image_converter src/image_converter.cpp)
 target_link_libraries(image_converter ${catkin_LIBRARIES})
 add_dependencies(image_converter ip_test_generate_messages_cpp)
 
+
+
 add_executable(image_publish src/image_publish.cpp)
 target_link_libraries(image_publish ${catkin_LIBRARIES})
 add_dependencies(image_publish ip_test_generate_messages_cpp)
