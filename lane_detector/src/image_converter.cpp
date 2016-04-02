@@ -57,7 +57,7 @@ public:
     cv::imshow(OPENCV_WINDOW, img);
     cv::waitKey(3);*/
 	
-	resize(img,img, Size(img.cols/3,img.rows/3));
+	resize(img,img, Size(640,360));
 
 	//split image in three channels, run edge detector on each and merge
 	Mat edges, b_edges, g_edges, r_edges, b_channel, g_channel, r_channel, temp;
@@ -282,10 +282,10 @@ public:
 	cv::Mat quad = cv::Mat::zeros(800, 800 ,CV_8UC3);
 
 	std::vector<cv::Point2f> quad_pts;
-	quad_pts.push_back(cv::Point2f(150, 181));
-	quad_pts.push_back(cv::Point2f(585, 181));
-	quad_pts.push_back(cv::Point2f(610, 209));
-	quad_pts.push_back(cv::Point2f(107, 209));
+	quad_pts.push_back(cv::Point2f(149, 183));
+quad_pts.push_back(cv::Point2f(484, 183));
+quad_pts.push_back(cv::Point2f(627, 283));
+quad_pts.push_back(cv::Point2f(37, 283));
 
   	std::vector<cv::Point2f> corners;
 	/*corners.push_back(cv::Point2f(0, 0));
@@ -319,9 +319,10 @@ public:
 		perspectiveTransform(lane_points, top_points, transmtx);
 		//cout<<top_points[0].x<<","<<top_points[0].y<<" "<<top_points[1].x<<","<<top_points[1].y<<endl;
 		//cout<<"left slope="<<180/CV_PI*acos((float)(top_points[1].x-top_points[0].x)/sqrt(((top_points[1].x-top_points[0].x)*(top_points[1].x-top_points[0].x))+((top_points[1].y-top_points[0].y)*(top_points[1].y-top_points[0].y)))<<endl;
-		//left_s=180/CV_PI*atan(((float)top_points[1].y-top_points[0].y)/(top_points[1].x-top_points[0].x));
-		left_s=180/CV_PI*acos((float)(top_points[1].x-top_points[0].x)/sqrt(((top_points[1].x-top_points[0].x)*(top_points[1].x-top_points[0].x))+((top_points[1].y-top_points[0].y)*(top_points[1].y-top_points[0].y))));
-		//cout<<"left slope="<<left_s<<endl;
+		left_s=180/CV_PI*atan(((float)top_points[1].y-top_points[0].y)/(top_points[1].x-top_points[0].x));
+		if(left_s<0)left_s=left_s+180;
+		//left_s=180/CV_PI*acos((float)(top_points[1].x-top_points[0].x)/sqrt(((top_points[1].x-top_points[0].x)*(top_points[1].x-top_points[0].x))+((top_points[1].y-top_points[0].y)*(top_points[1].y-top_points[0].y))));
+		cout<<"left slope="<<left_s<<endl;
 		line( top_view, top_points[0], top_points[1], Scalar(255,255,0), 3, CV_AA);		
 
 		lane_points.erase(lane_points.begin()+0);
@@ -345,15 +346,17 @@ public:
 		perspectiveTransform(lane_points, top_points, transmtx);
 		//cout<<top_points[0].x<<","<<top_points[0].y<<" "<<top_points[1].x<<","<<top_points[1].y<<endl;
 		//cout<<"right slope="<<180/CV_PI*atan(((float)top_points[1].y-top_points[0].y)/(top_points[1].x-top_points[0].x))<<endl;
-			//right_s=180/CV_PI*atan(((float)top_points[1].y-top_points[0].y)/(top_points[1].x-top_points[0].x));
-		right_s=180/CV_PI*acos((float)(top_points[1].x-top_points[0].x)/sqrt(((top_points[1].x-top_points[0].x)*(top_points[1].x-top_points[0].x))+((top_points[1].y-top_points[0].y)*(top_points[1].y-top_points[0].y))));
-		
+			right_s=180/CV_PI*atan(((float)top_points[1].y-top_points[0].y)/(top_points[1].x-top_points[0].x));
+		if(right_s<0)right_s=right_s+180;
+
+		//right_s=180/CV_PI*acos((float)(top_points[1].x-top_points[0].x)/sqrt(((top_points[1].x-top_points[0].x)*(top_points[1].x-top_points[0].x))+((top_points[1].y-top_points[0].y)*(top_points[1].y-top_points[0].y))));
+		cout<<"right slope="<<right_s<<endl;
 		line( top_view, top_points[0], top_points[1], Scalar(255,255,0), 3, CV_AA);	
 		
 		lane_points.erase(lane_points.begin()+0);
 		lane_points.erase(lane_points.begin()+1);
 	}
-	cout<<"Angle:"<<(left_s+right_s)/2<<endl;
+	cout<<"Angle:"<<(right_s)<<endl;
 	cv::Mat quad1 = cv::Mat::zeros(800, 800 ,CV_8UC3);
 	cv::warpPerspective(output, quad1, transmtx, quad.size());
 	imshow("IPM-Lanedetector", quad1);
